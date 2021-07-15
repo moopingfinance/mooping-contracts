@@ -12,13 +12,13 @@ contract MooPingToken is BEP20("MooPing Token", "MOOPING") {
     // Burn address
     address public constant BURN_ADDRESS =
         0x000000000000000000000000000000000000dEaD;
-    address public teamFeeAddress;
+    address public feeAddress;
 
-    // Transfer tax rate in basis points. (default 0.1%)
-    uint16 public transferTaxRate = 10;
+    // Transfer tax rate in basis points. (default 0.15%)
+    uint16 public transferTaxRate = 15;
     // Swap enabled when launch
     bool public swapEnabled = false;
-    // Max transfer amount rate in basis points. (default is 0.2% of total supply)
+    // Max transfer amount rate in basis points. (default is 0.15% of total supply)
     uint16 public maxTransferAmountRate = 20;
     // Addresses that excluded from antiWhale
     mapping(address => bool) private _excludedFromAntiWhale;
@@ -80,7 +80,7 @@ contract MooPingToken is BEP20("MooPing Token", "MOOPING") {
         _operator = _msgSender();
         emit OperatorTransferred(address(0), _operator);
 
-        teamFeeAddress = _feeAddress;
+        feeAddress = _feeAddress;
         _excludedFromAntiWhale[msg.sender] = true;
         _excludedFromAntiWhale[address(0)] = true;
         _excludedFromAntiWhale[address(this)] = true;
@@ -115,7 +115,7 @@ contract MooPingToken is BEP20("MooPing Token", "MOOPING") {
             "MOOPING::transfer: Tax value invalid"
         );
 
-        super._transfer(sender, teamFeeAddress, taxAmount);
+        super._transfer(sender, feeAddress, taxAmount);
         super._transfer(sender, recipient, sendAmount);
         amount = sendAmount;
     }
@@ -190,8 +190,8 @@ contract MooPingToken is BEP20("MooPing Token", "MOOPING") {
     }
 
     function setFeeAddress(address _feeAddress) public {
-        require(msg.sender == teamFeeAddress, "setFeeAddress: FORBIDDEN");
-        teamFeeAddress = _feeAddress;
+        require(msg.sender == feeAddress, "setFeeAddress: FORBIDDEN");
+        feeAddress = _feeAddress;
     }
 
     /**
