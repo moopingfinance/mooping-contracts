@@ -19,7 +19,7 @@ contract MooPingToken is BEP20("MooPing Token", "MOOPING") {
     // Swap enabled when launch
     bool public swapEnabled = false;
     // Max transfer amount rate in basis points. (default is 0.15% of total supply)
-    uint16 public maxTransferAmountRate = 20;
+    uint16 public maxTransferAmountRate = 15;
     // Addresses that excluded from antiWhale
     mapping(address => bool) private _excludedFromAntiWhale;
     // The operator can only update the transfer tax rate
@@ -124,7 +124,7 @@ contract MooPingToken is BEP20("MooPing Token", "MOOPING") {
      * @dev Returns the max transfer amount.
      */
     function maxTransferAmount() public view returns (uint256) {
-        return MAX_SUPPLY.mul(maxTransferAmountRate).div(10000);
+        return totalSupply().mul(maxTransferAmountRate).div(10000);
     }
 
     /**
